@@ -2,13 +2,14 @@ import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.GitPlugin.autoImport._
 import de.heikoseeberger.sbtheader.HeaderPlugin
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
-import de.heikoseeberger.sbtheader.HeaderPattern
 import de.heikoseeberger.sbtheader.license._
 import org.scalafmt.sbt.ScalaFmtPlugin
 import org.scalafmt.sbt.ScalaFmtPlugin.autoImport._
 import sbt._
 import sbt.plugins.JvmPlugin
 import sbt.Keys._
+
+// format: off
 
 object Build extends AutoPlugin {
 
@@ -20,30 +21,36 @@ object Build extends AutoPlugin {
   override def projectSettings =
     reformatOnCompileSettings ++
     Vector(
-      // Core settings
-      organization := "com.github.baccata",
-      licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
-      mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",
-      scalaVersion := Version.Scala,
-      crossScalaVersions := Vector(scalaVersion.value),
-      scalacOptions ++= Vector(
-        "-unchecked",
-        "-deprecation",
-        "-language:_",
-        "-target:jvm-1.8",
-        "-encoding", "UTF-8"
-      ),
-      unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
-      unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
+           // Core settings
+           organization := "com.github.baccata",
+           licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
+           mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",
+           scalaOrganization in ThisBuild := "org.typelevel",
+           scalaVersion := Version.Scala,
+           crossScalaVersions := Vector(scalaVersion.value),
+           scalacOptions ++= Vector(
+             "-unchecked",
+             "-deprecation",
+             "-language:_",
+             "-target:jvm-1.8",
+             "-encoding", "UTF-8",
+             "-language:implicitConversions",
+             "-language:higherKinds",
+             "-language:existentials",
+             "-Ypartial-unification",
+             "-language:postfixOps"
+           ),
+           unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
+           unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
 
-      // scalafmt settings
-      formatSbtFiles := false,
-      scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
+           // scalafmt settings
+           formatSbtFiles := false,
+           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
 
-      // Git settings
-      git.useGitDescribe := true,
+           // Git settings
+           git.useGitDescribe := true,
 
-      // Header settings
-      headers := Map("scala" -> MIT("2016", "Olivier Mélois"))
+           // Header settings
+           headers := Map("scala" -> MIT("2016", "Olivier Mélois"))
     )
 }
